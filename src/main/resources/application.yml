@@ -1,0 +1,16 @@
+micronaut:
+  application:
+    name: iot-starter
+netty:
+  default:
+    allocator:
+      max-order: 3
+
+azure:
+  hubHost   : "blumtest-iot.azure-devices.net"
+  connection: ""
+
+crypto:
+  outputFolder: ""
+  ellipticCurve: "prime256v1"
+  expirationYear: 2050
