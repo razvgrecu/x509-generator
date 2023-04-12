@@ -10,7 +10,7 @@ plugins {
 group = "eu.stephanson.external"
 version = "0.1"
 
-val kotlinVersion=project.properties.get("kotlinVersion")
+val kotlinVersion = project.properties["kotlinVersion"]
 
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
@@ -24,13 +24,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("io.micronaut:micronaut-validation")
-    runtimeOnly("org.apache.logging.log4j:log4j-core")
-    runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl")
-    compileOnly("org.graalvm.nativeimage:svm")
-    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("net.lingala.zip4j:zip4j:2.11.5")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
     implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     implementation("com.microsoft.azure.sdk.iot.provisioning:provisioning-service-client:2.0.2")
+
+    compileOnly("org.graalvm.nativeimage:svm")
+    runtimeOnly("org.apache.logging.log4j:log4j-core")
+    runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl")
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     testImplementation(kotlin("test"))
 }
@@ -44,7 +46,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("eu.stephanson.external.ApplicationKt")
+    mainClass.set("eu.stephanson.external.iot.app.ApplicationKt")
 }
 
 graalvmNative.toolchainDetection.set(false)

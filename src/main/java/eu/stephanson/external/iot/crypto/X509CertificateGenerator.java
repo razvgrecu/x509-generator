@@ -1,8 +1,10 @@
 package eu.stephanson.external.iot.crypto;
 
+import eu.stephanson.external.iot.crypto.domain.GeneratedCertificate;
 import eu.stephanson.external.iot.properties.CryptoConfigurationProperties;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import net.lingala.zip4j.ZipFile;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -15,6 +17,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -40,7 +43,8 @@ public class X509CertificateGenerator {
         this.configurationProperties = cryptoConfigurationProperties;
     }
 
-    public String generate(
+    @NotNull
+    public GeneratedCertificate generate(
             final String commonName,
             final KeyPair keys
     ) throws
@@ -76,25 +80,40 @@ public class X509CertificateGenerator {
         final X509Certificate x509Certificate = converter.getCertificate(holder);
         final var certificateWriter = new StringWriter();
         final var privateKeyWriter = new StringWriter();
-        final var result = new StringBuilder();
+        final var certificateContent = new StringBuilder();
+        final var privateKeyContent = new StringBuilder();
+        final var zipFile = new ZipFile(configurationProperties.getOutputFolder() + "/contents.zip");
+
 
         try (final var certificatePemWriter = new JcaPEMWriter(certificateWriter)) {
             certificatePemWriter.writeObject(x509Certificate);
             final var content = certificateWriter.toString();
-            Files.writeString(Paths.get(configurationProperties.getOutputFolder(), "cert.pem"), content);
-            result.append(content);
+            final var path = Files.writeString(Paths.get(configurationProperties.getOutputFolder(), "cert.pem"), content);
+            zipFile.addFile(path.toFile());
+            certificateContent.append(content);
         } catch (Exception exception) {
+            zipFile.close();
             // do nada momentarily
         }
 
         try (final var privateKeyPemWriter = new JcaPEMWriter(privateKeyWriter)) {
             privateKeyPemWriter.writeObject(keys.getPrivate());
-            Files.writeString(Paths.get(configurationProperties.getOutputFolder(), "key.pem"), privateKeyWriter.toString());
+            final var content = privateKeyWriter.toString();
+            final var path = Files.writeString(Paths.get(configurationProperties.getOutputFolder(), "key.pem"), content);
+            zipFile.addFile(path.toFile());
+            privateKeyContent.append(content);
         } catch (Exception exception) {
+            zipFile.close();
             // do nada momentarily
         }
 
-        return result.toString();
+        zipFile.close();
+
+        return new GeneratedCertificate(
+                certificateContent.toString(),
+                privateKeyContent.toString(),
+                zipFile
+        );
     }
 
 }

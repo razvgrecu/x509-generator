@@ -4,6 +4,7 @@ import eu.stephanson.external.iot.properties.CryptoConfigurationProperties;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
@@ -26,6 +27,7 @@ public class EllipticCurveKeyGenerator {
         this.configurationProperties = properties;
     }
 
+    @NotNull
     public KeyPair generate() throws
             NoSuchAlgorithmException,
             InvalidAlgorithmParameterException,
