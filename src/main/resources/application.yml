@@ -8,7 +8,7 @@ netty:
 
 azure:
   hubHost   : "blumtest-iot.azure-devices.net"
-  connection: ""
+  connection: "use an application-local.yml where you add this value; use the local profile then"
 
 crypto:
   outputFolder: ""
