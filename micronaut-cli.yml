@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: eu.stephanson.external.iot
+testFramework: junit
+sourceLanguage: kotlin
+buildTool: gradle_kotlin
+features: [annotation-api, app-name, graalvm, gradle, http-client, jackson-databind, junit, kotlin, kotlin-application, kotlin-build, kotlin-extension-functions, log4j2, micronaut-aot, micronaut-build, netty-server, readme, shade, yaml]
