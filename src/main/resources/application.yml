@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: iot-starter
+  server:
+    port: 8201
 netty:
   default:
     allocator:
