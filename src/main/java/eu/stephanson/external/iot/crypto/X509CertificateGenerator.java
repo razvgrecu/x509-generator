@@ -5,10 +5,11 @@ import eu.stephanson.external.iot.properties.CryptoConfigurationProperties;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import net.lingala.zip4j.ZipFile;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyPair;
@@ -58,7 +58,7 @@ public class X509CertificateGenerator {
 
         final BigInteger serial = new BigInteger(160, SecureRandom.getInstance("SHA1PRNG"));
 
-        final JcaX509v3CertificateBuilder certificate = new JcaX509v3CertificateBuilder(
+        final JcaX509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(
                 subject,
                 serial,
                 Date.from(LocalDate.of(2023, 1, 1).atStartOfDay(ZoneOffset.UTC).toInstant()),
@@ -66,13 +66,19 @@ public class X509CertificateGenerator {
                 subject,
                 keys.getPublic()
         );
-        certificate
-                .addExtension(Extension.extendedKeyUsage, false, "clientAuth".getBytes(StandardCharsets.UTF_8));
-        final ContentSigner signer = new JcaContentSignerBuilder("SHA256withECDSA").build(
-                keys.getPrivate()
-        );
 
-        final X509CertificateHolder holder = certificate.build(signer);
+        certificateBuilder
+                .addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, new BasicConstraints(false))
+                .addExtension(Extension.keyUsage, false, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature).getEncoded())
+                .addExtension(Extension.extendedKeyUsage, false, new ExtendedKeyUsage(new KeyPurposeId[] {
+                        KeyPurposeId.id_kp_serverAuth,
+                        KeyPurposeId.id_kp_clientAuth,
+                }));
+
+
+        final ContentSigner signer = new JcaContentSignerBuilder("SHA256withECDSA").build(keys.getPrivate());
+
+        final X509CertificateHolder holder = certificateBuilder.build(signer);
 
         final JcaX509CertificateConverter converter = new JcaX509CertificateConverter()
                 .setProvider(new BouncyCastleProvider());

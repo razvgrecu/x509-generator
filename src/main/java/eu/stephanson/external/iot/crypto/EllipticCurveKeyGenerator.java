@@ -17,7 +17,7 @@ import java.security.spec.ECGenParameterSpec;
 @Singleton
 public class EllipticCurveKeyGenerator {
 
-    private static final String ALGORITHM = "ECDSA";
+    private static final String ALGORITHM = "EC";
     private static final String RANDOM_ALGORITHM = "SHA1PRNG";
 
     private final CryptoConfigurationProperties configurationProperties;
