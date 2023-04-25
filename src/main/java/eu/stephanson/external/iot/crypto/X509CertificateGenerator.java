@@ -87,24 +87,24 @@ public class X509CertificateGenerator {
 
         try (final var certificatePemWriter = new JcaPEMWriter(certificateWriter)) {
             certificatePemWriter.writeObject(x509Certificate);
+        } catch (Exception exception) {
+            // do nada momentarily
+        } finally {
             final var content = certificateWriter.toString();
             final var path = Files.writeString(Paths.get(configurationProperties.getOutputFolder(), "cert.pem"), content);
             zipFile.addFile(path.toFile());
             certificateContent.append(content);
-        } catch (Exception exception) {
-            zipFile.close();
-            // do nada momentarily
         }
 
         try (final var privateKeyPemWriter = new JcaPEMWriter(privateKeyWriter)) {
             privateKeyPemWriter.writeObject(keys.getPrivate());
+        } catch (Exception exception) {
+            // do nada momentarily
+        } finally {
             final var content = privateKeyWriter.toString();
             final var path = Files.writeString(Paths.get(configurationProperties.getOutputFolder(), "key.pem"), content);
             zipFile.addFile(path.toFile());
             privateKeyContent.append(content);
-        } catch (Exception exception) {
-            zipFile.close();
-            // do nada momentarily
         }
 
         zipFile.close();

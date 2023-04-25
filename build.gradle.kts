@@ -13,6 +13,9 @@ version = "0.1"
 val kotlinVersion = project.properties["kotlinVersion"]
 
 dependencies {
+    implementation(platform("org.apache.logging.log4j:log4j-bom:2.19.0"))
+    implementation("org.apache.logging.log4j:log4j-api")
+
     kapt("io.micronaut:micronaut-http-validation")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
@@ -29,7 +32,8 @@ dependencies {
 
     compileOnly("org.graalvm.nativeimage:svm")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
-
+    runtimeOnly("org.apache.logging.log4j:log4j-core")
+    runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl")
     testImplementation(kotlin("test"))
 }
 
@@ -38,7 +42,7 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 application {

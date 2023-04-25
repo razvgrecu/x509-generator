@@ -26,6 +26,7 @@ public class AzureEnrollmentService {
     public IndividualEnrollment enroll(final String id, final String certificateContent) throws ProvisioningServiceClientException {
         final X509Attestation attestation = X509Attestation.createFromClientCertificates(certificateContent);
         final IndividualEnrollment enrollment = new IndividualEnrollment(id, attestation);
+        enrollment.setDeviceId(id);
         enrollment.setIotHubHostName(configurationProperties.hubHost());
         enrollment.setProvisioningStatus(ProvisioningStatus.ENABLED);
         return serviceClient.createOrUpdateIndividualEnrollment(enrollment);

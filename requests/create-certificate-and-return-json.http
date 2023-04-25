@@ -1,0 +1,8 @@
+POST http://localhost:8201/api/v1/certificate
+Content-Type: application/json
+
+{
+  "commonName": "tester-123"
+}
+
+###

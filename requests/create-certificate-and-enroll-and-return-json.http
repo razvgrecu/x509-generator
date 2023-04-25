@@ -1,0 +1,8 @@
+POST http://localhost:8201/api/v1/enrollment
+Content-Type: application/json
+
+{
+  "commonName": "razvan-grecu-934287443"
+}
+
+###
