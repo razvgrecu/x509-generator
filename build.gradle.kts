@@ -14,13 +14,11 @@ val kotlinVersion = project.properties["kotlinVersion"]
 
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
-    implementation(platform("org.apache.logging.log4j:log4j-bom:2.19.0"))
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("jakarta.annotation:jakarta.annotation-api")
-    implementation("org.apache.logging.log4j:log4j-api")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("io.micronaut:micronaut-validation")
@@ -30,8 +28,6 @@ dependencies {
     implementation("com.microsoft.azure.sdk.iot.provisioning:provisioning-service-client:2.0.2")
 
     compileOnly("org.graalvm.nativeimage:svm")
-    runtimeOnly("org.apache.logging.log4j:log4j-core")
-    runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     testImplementation(kotlin("test"))
